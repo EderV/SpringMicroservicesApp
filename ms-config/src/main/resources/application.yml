@@ -1,13 +1,21 @@
 server:
   port: 8888
 
+#spring:
+#  application:
+#    name: ms-config
+#  profiles:
+#    active: native
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          search-locations: classpath:/configs
+
 spring:
-  application:
-    name: ms-config
-  profiles:
-    active: native
   cloud:
     config:
       server:
-        native:
-          search-locations: classpath:/configs
+        git:
+          uri: https://github.com/EderV/spring-ms-app-config
+          search-paths: '{application}'

@@ -39,6 +39,29 @@
     <spring.actuator.version>3.2.1</spring.actuator.version>
   </properties>
 
+  <profiles>
+
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <packaging.type>jar</packaging.type>
+        <active.profile>dev</active.profile>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>prod</id>
+      <properties>
+        <packaging.type>jar</packaging.type>
+        <active.profile>prod</active.profile>
+      </properties>
+    </profile>
+
+  </profiles>
+
   <dependencies>
 
     <dependency>

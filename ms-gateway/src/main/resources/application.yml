@@ -1,5 +1,7 @@
 spring:
   application:
     name: ms-gateway
+  profiles:
+    active: @active.profile@
   config:
     import: 'optional:configserver:http://localhost:8888'

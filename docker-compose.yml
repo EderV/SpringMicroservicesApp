@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  auth-db:
+    container_name: "user-auth-db"
+    image: "mysql:8.0.32"
+    restart: always
+    ports:
+      - "3312:3306"
+    expose:
+      - "3312"
+    volumes:
+      - db_auth:/data
+    environment:
+      MYSQL_DATABASE: login_db
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: pass1
+      MYSQL_ROOT_PASSWORD: root
+
+volumes:
+  db_auth:
