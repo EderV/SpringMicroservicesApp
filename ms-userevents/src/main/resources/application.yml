@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ms-userevents
+  profiles:
+    active: @active.profile@
+  config:
+    import: 'optional:configserver:http://localhost:8888'

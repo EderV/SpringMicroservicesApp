@@ -23,7 +23,7 @@
     <module>ms-config</module>
     <module>ms-gateway</module>
     <module>ms-auth</module>
-    <module>ms-example</module>
+    <module>ms-userevents</module>
   </modules>
 
   <properties>
