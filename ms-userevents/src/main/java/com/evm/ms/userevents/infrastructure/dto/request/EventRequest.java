@@ -26,8 +26,8 @@ public class EventRequest {
 
     private ZonedDateTime eventDateTime;
 
-//    private String timeZone;
-
     private List<Integer> preNotices;  // in minutes
+
+    private Boolean triggered;
 
 }

@@ -26,13 +26,24 @@ public interface EventMapper {
 
     @Mapping(
             target = "eventDateTime",
-            expression = "java(event.getEventDateTime().toString())"
+            expression = "java(zonedDateTimeToString(event.getEventDateTime()))"
     )
     EventEntity toEventEntity(Event event);
 
+    EventRequest toEventRequest(Event event);
+
     @Named("stringToZonedDateTime")
     default ZonedDateTime stringToZonedDateTime(String dateTime) {
+        if (dateTime == null || dateTime.isBlank()) return null;
+
         return ZonedDateTime.parse(dateTime);
+    }
+
+    @Named("zonedDateTimeToString")
+    default String zonedDateTimeToString(ZonedDateTime zonedDateTime) {
+        if (zonedDateTime == null) return null;
+
+        return zonedDateTime.toString();
     }
 
 }

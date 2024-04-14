@@ -28,4 +28,6 @@ public class Event {
 
     private List<Integer> preNotices;  // in minutes
 
+    private Boolean triggered;
+
 }

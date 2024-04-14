@@ -37,4 +37,6 @@ public class EventEntity {
     @Field("pre_notices")
     private List<Integer> preNotices;  // in minutes
 
+    private Boolean triggered;
+
 }

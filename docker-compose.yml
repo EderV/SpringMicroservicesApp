@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   auth-db:
     container_name: "user-auth-db"
     image: "mysql:8.0.32"
@@ -29,6 +30,31 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - user-events-mongo-data:/data/db
+
+  zookeeper:
+    image: zookeeper:3.7.2
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - kafka-net
+
+  kafka:
+    image: bitnami/kafka:3.6.2
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    driver: bridge
 
 volumes:
   db_auth:
