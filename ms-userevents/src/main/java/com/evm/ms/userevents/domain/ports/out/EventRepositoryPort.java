@@ -14,6 +14,6 @@ public interface EventRepositoryPort {
 
     Event saveEvent(Event event);
 
-    boolean updateEventOnlyNonNulls(Event event);
+    Event updateEventOnlyNonNulls(Event event);
 
 }

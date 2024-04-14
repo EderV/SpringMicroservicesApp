@@ -50,19 +50,19 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     }
 
     @Override
-    public boolean updateEventOnlyNonNulls(Event event) {
+    public Event updateEventOnlyNonNulls(Event event) {
         var eventEntity = toEventEntity(event);
         var id = eventEntity.getId();
-        if (id == null) return false;
+        if (id == null) return null;
 
         var oldEventEntity = eventRepository.findById(id);
-        if (oldEventEntity.isEmpty()) return false;
+        if (oldEventEntity.isEmpty()) return null;
 
         var modifiedEventEntity = oldEventEntity.get();
         beanUtils.copyPropertiesIgnoringNulls(eventEntity, modifiedEventEntity);
 
-        eventRepository.save(modifiedEventEntity);
-        return true;
+        var updatedEvent = eventRepository.save(modifiedEventEntity);
+        return toEvent(updatedEvent);
     }
 
     private EventEntity toEventEntity(Event event) {

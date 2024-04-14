@@ -4,9 +4,13 @@ use std::time::Duration;
 async fn main(){
     println!("Hello, world!");
 
-    for i in 0..100000 {
-        tokio::spawn(async move{
-            tokio::time::sleep(Duration::from_secs(10 + i)).await;
+    for mut i in 0..100000 {
+        tokio::spawn(async move {
+            let mut mutable_index = i;
+            if i > 100 && i < 200 {
+                mutable_index = 0
+            }
+            tokio::time::sleep(Duration::from_secs(10 + mutable_index)).await;
             println!("I am the task number {}", i)
         });
     }
