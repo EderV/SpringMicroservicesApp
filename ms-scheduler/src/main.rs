@@ -4,6 +4,7 @@ use dotenv::dotenv;
 
 use crate::infrastructure::config_client_service;
 use crate::infrastructure::config_client_service::ConfigClientService;
+use crate::infrastructure::kafka_consumer_client::KafkaConsumerClient;
 
 mod infrastructure;
 mod domain;
@@ -13,8 +14,11 @@ mod application;
 async fn main(){
     println!("Hello, world!");
 
+    set_build_name_env();
     setup_app_config().await;
-    setup_eureka_client().await;
+
+    let mut kafka_consumer = KafkaConsumerClient::default();
+    kafka_consumer.start().await;
 }
 
 async fn setup_app_config() {
@@ -22,7 +26,7 @@ async fn setup_app_config() {
         panic!("No .env file found. Cannot start the app")
     }
 
-    let mut config_client = ConfigClientService::default();
+    let config_client = ConfigClientService::default();
     let config = config_client.obtain_config().await.unwrap_or_else(|error| {
         panic!("Error obtaining config from config server. Error: {:?}", error)
     });
@@ -30,10 +34,6 @@ async fn setup_app_config() {
     println!("Config: {:?}", &config);
 
     config_client_service::setup_environment_variables(config);
-}
-
-async fn setup_eureka_client() {
-
 }
 
 // By default return dev

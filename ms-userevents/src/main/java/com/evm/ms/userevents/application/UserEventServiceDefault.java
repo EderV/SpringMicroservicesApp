@@ -24,6 +24,7 @@ public class UserEventServiceDefault implements UserEventServicePort {
         var savedEvent = eventRepositoryPort.saveEvent(event);
 
         messageBrokerPort.sendMessage(MessageTopicsConstants.NEW_EVENT, gson.toJson(savedEvent));
+//        messageBrokerPort.sendMessage(MessageTopicsConstants.NEW_EVENT, "New event with title: ".concat(event.getTitle()));
     }
 
     @Override

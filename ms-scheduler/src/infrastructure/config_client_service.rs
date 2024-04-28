@@ -4,7 +4,7 @@ use std::string::ToString;
 
 use reqwest;
 
-use crate::domain::config_server::Config;
+use crate::domain::entities::config_server::Config;
 use crate::domain::entities::config_client_config::ConfigClientConfig;
 use crate::domain::errors::config_client_errors::GetConfigError;
 
