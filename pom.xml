@@ -24,6 +24,7 @@
     <module>ms-gateway</module>
     <module>ms-auth</module>
     <module>ms-userevents</module>
+    <module>ms-scheduler</module>
   </modules>
 
   <properties>

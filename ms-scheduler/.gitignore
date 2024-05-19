@@ -1,14 +1,33 @@
+HELP.md
 target/
-Cargo.lock
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-test/*.rs
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-docs/
-
-debug/*
-
-.cargo/
-
+### IntelliJ IDEA ###
+.idea
+*.iws
 *.iml
-*.idea
-*.suo
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/

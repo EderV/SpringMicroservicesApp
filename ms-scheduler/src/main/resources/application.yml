@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ms-gateway
+    name: ms-scheduler
   profiles:
     active: @active.profile@
   config:

@@ -17,7 +17,7 @@ public class KafkaMessengerAdapter implements MessageBrokerPort<String> {
     public void sendMessage(String topic, String message) {
         kafkaTemplate.send(topic, message).whenComplete((res, ex) -> {
             if (ex != null) {
-                log.error("Something went wrong sending message {" + message + "} to topic {" + topic + "}");
+                log.error("Something went wrong sending message {{}} to topic {{}}", message, topic);
             }
         });
     }
