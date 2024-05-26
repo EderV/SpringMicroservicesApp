@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/super-user/**").hasRole("SUPER_USER")
                 .requestMatchers("/api/auth/val/example/test").authenticated()
                 .requestMatchers("/api/auth/val/ms/user/event/**").authenticated()
+                .requestMatchers("/api/auth/val/ms/scheduler/**").authenticated()
                 .anyRequest().permitAll())
 
                 .cors(Customizer.withDefaults())
