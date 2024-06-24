@@ -9,11 +9,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TimeUtils {
+public class EventScheduleUtils {
 
     /**
      * Calculates an array of delays containing the delay from the offset to the preNotices times and trigger time
-     * @param offset from when you want to calculate the delays. Offset from epoc time
+     * @param offset from when you want to calculate the delays. Offset from epoc time in seconds
      * @param preNotices events previous to trigger time in minutes
      * @param triggerTime date of the final event
      * @return a list of delays from the offset time to be waited sequentially using a for loop. If the trigger time
@@ -29,16 +29,16 @@ public class TimeUtils {
         var triggerTimeEpochSecond = triggerTime.toEpochSecond();
 
         if (preNotices != null && !preNotices.isEmpty()) {
-            var preNoticesSeconds = preNotices.stream()
+            // Delete zeros, remove duplicates, sort and convert to seconds
+            var preNoticesSeconds = new ArrayList<>(preNotices.stream()
                     .filter(num -> num != 0)
                     .distinct()
                     .sorted((a, b) -> b - a)
                     .map(n -> n * 60)
-                    .toList();
+                    .toList());
 
-            preNoticesSeconds.forEach((n) -> log.error("PreNotices: {}", n));
-
-            for (int i = 0; i < preNoticesSeconds.size(); i++) {
+            int i = 0;
+            while (i < preNoticesSeconds.size()) {
                 long delay;
                 if (i == 0) {
                     delay = triggerTimeEpochSecond - preNoticesSeconds.get(i) - offset;
@@ -46,11 +46,25 @@ public class TimeUtils {
                 else {
                     delay = preNoticesSeconds.get(i - 1) - preNoticesSeconds.get(i);
                 }
-                delays.add(delay);
+
+                if (delay > 0) {
+                    delays.add(delay);
+                    i++;
+                }
+                else {
+                    preNoticesSeconds.remove(i);
+                }
             }
 
-            var lastPreNotice = (long) preNoticesSeconds.get(preNotices.size() - 1);
-            delays.add(lastPreNotice);
+            // Delays array empty means that we are after last pre-notice and before trigger time
+            if (delays.isEmpty()) {
+                var delay = triggerTimeEpochSecond - offset;
+                delays.add(delay);
+            }
+            else {
+                var lastPreNotice = (long) preNoticesSeconds.get(preNoticesSeconds.size() - 1);
+                delays.add(lastPreNotice);
+            }
         }
         else {
             var delay = triggerTimeEpochSecond - offset;
