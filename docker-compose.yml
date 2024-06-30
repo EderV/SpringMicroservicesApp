@@ -13,7 +13,23 @@ services:
     volumes:
       - db_auth:/data
     environment:
-      MYSQL_DATABASE: login_db
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: pass1
+      MYSQL_ROOT_PASSWORD: root
+
+  notification-config-db:
+    container_name: "notification-config-db"
+    image: "mysql:8.0.32"
+    restart: always
+    ports:
+      - "3314:3306"
+    expose:
+      - "3314"
+    volumes:
+      - notification-config-db:/data
+    environment:
+      MYSQL_DATABASE: notification-config-db
       MYSQL_USER: user1
       MYSQL_PASSWORD: pass1
       MYSQL_ROOT_PASSWORD: root
@@ -30,40 +46,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     volumes:
       - user-events-mongo-data:/data/db
-
-#  zookeeper:
-#    image: zookeeper:3.7.2
-#    container_name: zookeeper
-#    ports:
-#      - "2181:2181"
-#    networks:
-#      - kafka-net
-
-#  kafka:
-#    image: bitnami/kafka:3.6.2
-#    container_name: kafka
-#    ports:
-#      - "9092:9092"
-#      - "9094:9094"
-#    environment:
-#      - KAFKA_CFG_NODE_ID=1
-#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@127.0.0.1:9093
-#      - KAFKA_CFG_LISTENERS=PLAINTEXT://kafka:9092,CONTROLLER://:9093,EXTERNAL://127.0.0.1:9094
-#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
-#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
-#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-#      - KAFKA_CFG_ZOOKEEPER_METADATA_MIGRATION_ENABLE=true
-#      - ALLOW_PLAINTEXT_LISTENER=yes
-#    depends_on:
-#      - zookeeper
-#    networks:
-#      - kafka-net
-
-#networks:
-#  kafka-net:
-#    driver: bridge
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.4
@@ -89,4 +71,5 @@ services:
 
 volumes:
   db_auth:
+  notification-config-db:
   user-events-mongo-data:

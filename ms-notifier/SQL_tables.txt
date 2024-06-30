@@ -1,0 +1,35 @@
+CREATE TABLE notification_config
+(
+    id                  VARCHAR(36)     PRIMARY KEY,
+    user_id				VARCHAR(36)		NOT NULL,
+    category			VARCHAR(255)	NOT NULL,
+    created_by          VARCHAR(36)		NOT NULL,
+    created_at          TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
+    updated_by          VARCHAR(36)		NOT NULL,
+    updated_at			TIMESTAMP		DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE email
+(
+    id                  		VARCHAR(36)     PRIMARY KEY,
+    notification_config_id		VARCHAR(36)		NOT NULL,
+    email               		VARCHAR(255)    NOT NULL,
+    created_by                  VARCHAR(36)		NOT NULL,
+    created_at                  TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
+    updated_by                  VARCHAR(36)		NOT NULL,
+    updated_at			        TIMESTAMP		DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_notification_email FOREIGN KEY (notification_config_id) REFERENCES notification_config (id)
+);
+
+CREATE TABLE android
+(
+    id                  		VARCHAR(36)     PRIMARY KEY,
+    notification_config_id		VARCHAR(36)		NOT NULL,
+    token               		VARCHAR(255)    NOT NULL,
+    identifier   				VARCHAR(255)    NOT NULL,
+    created_by                  VARCHAR(36)		NOT NULL,
+    created_at                  TIMESTAMP		DEFAULT CURRENT_TIMESTAMP,
+    updated_by                  VARCHAR(36)		NOT NULL,
+    updated_at			        TIMESTAMP		DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_notification_android FOREIGN KEY (notification_config_id) REFERENCES notification_config (id)
+);
