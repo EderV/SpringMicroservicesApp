@@ -1,6 +1,5 @@
 package com.evm.ms.notifier.infrastructure.dto.entity;
 
-import com.evm.ms.notifier.domain.NotificationConfig;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +17,8 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "email")
-public class EmailEntity {
+@Table(name = "email_config")
+public class EmailConfigEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,10 +26,10 @@ public class EmailEntity {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "notification_config_id", nullable = false)
+    @JoinColumn(name = "notification_config_id")
     private NotificationConfigEntity notificationConfig;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String email;
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -39,7 +38,7 @@ public class EmailEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -48,7 +47,7 @@ public class EmailEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Date updatedAt;
 
 }

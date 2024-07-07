@@ -34,11 +34,11 @@ public class NotificationConfigEntity {
     @Column(nullable = false)
     private String category;
 
-    @OneToMany(mappedBy = "notification_config", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EmailEntity> emails;
+    @OneToMany(mappedBy = "notificationConfig", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EmailConfigEntity> emails;
 
-    @OneToMany(mappedBy = "notification_config", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<AndroidEntity> androids;
+    @OneToMany(mappedBy = "notificationConfig", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AndroidConfigEntity> androids;
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @Column(name = "created_by", nullable = false)
@@ -46,7 +46,7 @@ public class NotificationConfigEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -55,7 +55,7 @@ public class NotificationConfigEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Date updatedAt;
 
 }

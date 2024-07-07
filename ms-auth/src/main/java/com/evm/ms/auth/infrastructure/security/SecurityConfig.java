@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/val/example/test").authenticated()
                 .requestMatchers("/api/auth/val/ms/user/event/**").authenticated()
                 .requestMatchers("/api/auth/val/ms/scheduler/**").authenticated()
+                .requestMatchers("/api/auth/val/ms/notifier/**").authenticated()
                 .anyRequest().permitAll())
 
                 .cors(Customizer.withDefaults())

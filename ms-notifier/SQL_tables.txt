@@ -9,7 +9,7 @@ CREATE TABLE notification_config
     updated_at			TIMESTAMP		DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE email
+CREATE TABLE email_config
 (
     id                  		VARCHAR(36)     PRIMARY KEY,
     notification_config_id		VARCHAR(36)		NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE email
     CONSTRAINT fk_notification_email FOREIGN KEY (notification_config_id) REFERENCES notification_config (id)
 );
 
-CREATE TABLE android
+CREATE TABLE android_config
 (
     id                  		VARCHAR(36)     PRIMARY KEY,
     notification_config_id		VARCHAR(36)		NOT NULL,

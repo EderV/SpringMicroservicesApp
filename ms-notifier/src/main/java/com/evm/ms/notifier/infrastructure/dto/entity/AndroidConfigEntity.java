@@ -17,8 +17,8 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "android")
-public class AndroidEntity {
+@Table(name = "android_config")
+public class AndroidConfigEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,7 +26,7 @@ public class AndroidEntity {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "notification_config_id", nullable = false)
+    @JoinColumn(name = "notification_config_id")
     private NotificationConfigEntity notificationConfig;
 
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public class AndroidEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -50,7 +50,7 @@ public class AndroidEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "dd/MM/yyyy hh:mm:ss")
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Date updatedAt;
 
 }
