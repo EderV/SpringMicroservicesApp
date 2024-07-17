@@ -6,4 +6,6 @@ public interface NotifierServicePort {
 
     void notifyClient(Event event);
 
+    void eventFinishedNotifyClient(Event event);
+
 }

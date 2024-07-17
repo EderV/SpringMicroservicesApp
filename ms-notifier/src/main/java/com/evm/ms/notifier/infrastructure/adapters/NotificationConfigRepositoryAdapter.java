@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -42,8 +45,30 @@ public class NotificationConfigRepositoryAdapter implements NotificationConfigRe
         repository.save(notificationConfigEntity);
     }
 
+    @Override
+    public Optional<NotificationConfig> getNotificationConfigByUUID(UUID id) {
+        var optionalNotificationConfigEntity = repository.findById(id);
+        return toNotificationConfigOptional(optionalNotificationConfigEntity);
+    }
+
+    @Override
+    public Optional<NotificationConfig> getNotificationConfigByUserUUID(UUID id) {
+        var optionalNotificationConfigEntity = repository.findLastSavedConfigByUserUUID(id);
+        return toNotificationConfigOptional(optionalNotificationConfigEntity);
+    }
+
     private NotificationConfigEntity toNotificationConfigEntity(NotificationConfig notificationConfig) {
         return NotificationConfigMapper.MAPPER.toNotificationConfigEntity(notificationConfig);
+    }
+
+    private Optional<NotificationConfig> toNotificationConfigOptional(
+            Optional<NotificationConfigEntity> optionalNotificationConfigEntity) {
+
+        if (optionalNotificationConfigEntity.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return optionalNotificationConfigEntity.map(NotificationConfigMapper.MAPPER::toNotificationConfig);
     }
 
 }
