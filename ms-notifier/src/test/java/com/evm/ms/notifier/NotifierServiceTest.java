@@ -7,9 +7,11 @@ import com.evm.ms.notifier.domain.Event;
 import com.evm.ms.notifier.domain.config.AndroidConfig;
 import com.evm.ms.notifier.domain.config.EmailConfig;
 import com.evm.ms.notifier.domain.config.NotificationConfig;
+import com.evm.ms.notifier.domain.ports.out.MessengerOutputPort;
 import com.evm.ms.notifier.domain.ports.out.NotificationConfigRepositoryPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -26,13 +30,16 @@ import static org.mockito.Mockito.*;
 public class NotifierServiceTest {
 
     @Mock
-    private NotificationConfigRepositoryPort notificationConfigRepositoryPort;
+    private NotificationConfigRepositoryPort notificationConfigRepositoryPortMock;
 
     @Mock
-    private AndroidService androidService;
+    private AndroidService androidServiceMock;
 
     @Mock
-    private EmailService emailService;
+    private EmailService emailServiceMock;
+
+    @Mock
+    private MessengerOutputPort messengerOutputPortMock;
 
     @InjectMocks
     private NotifierService notifierService;
@@ -58,51 +65,74 @@ public class NotifierServiceTest {
 
         notifierService.notifyClient(event);
 
-        verify(notificationConfigRepositoryPort, never()).getNotificationConfigByUserUUID(any());
-        verify(androidService, never()).sendNotification(any(), any());
-        verify(emailService, never()).sendEmail(any(), any());
+        verify(notificationConfigRepositoryPortMock, never()).getNotificationConfigByUserUUID(any());
+        verify(androidServiceMock, never()).sendNotification(any(), any());
+        verify(emailServiceMock, never()).sendEmail(any(), any());
     }
 
     @Test
     public void notifyClient_shouldLogWarning_whenNoNotificationConfigExists() {
-        when(notificationConfigRepositoryPort.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.empty());
+        when(notificationConfigRepositoryPortMock.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.empty());
 
         notifierService.notifyClient(event);
 
-        verify(androidService, never()).sendNotification(any(), any());
-        verify(emailService, never()).sendEmail(any(), any());
+        verify(androidServiceMock, never()).sendNotification(any(), any());
+        verify(emailServiceMock, never()).sendEmail(any(), any());
     }
 
     @Test
     public void notifyClient_shouldSendNotification_whenAndroidConfigsExist() {
         config.setEmails(List.of());
-        when(notificationConfigRepositoryPort.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
+        when(notificationConfigRepositoryPortMock.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
 
         notifierService.notifyClient(event);
 
-        verify(androidService, times(1)).sendNotification(config.getAndroids(), event);
-        verify(emailService, never()).sendEmail(any(), any());
+        verify(androidServiceMock, times(1)).sendNotification(config.getAndroids(), event);
+        verify(emailServiceMock, never()).sendEmail(any(), any());
     }
 
     @Test
     public void notifyClient_shouldSendEmail_whenEmailConfigsExist() {
         config.setAndroids(List.of());
-        when(notificationConfigRepositoryPort.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
+        when(notificationConfigRepositoryPortMock.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
 
         notifierService.notifyClient(event);
 
-        verify(emailService, times(1)).sendEmail(config.getEmails(), event);
-        verify(androidService, never()).sendNotification(any(), any());
+        verify(emailServiceMock, times(1)).sendEmail(config.getEmails(), event);
+        verify(androidServiceMock, never()).sendNotification(any(), any());
     }
 
     @Test
     public void notifyClient_shouldSendBothNotificationAndEmail_whenBothConfigsExist() {
-        when(notificationConfigRepositoryPort.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
+        when(notificationConfigRepositoryPortMock.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
 
         notifierService.notifyClient(event);
 
-        verify(androidService, times(1)).sendNotification(config.getAndroids(), event);
-        verify(emailService, times(1)).sendEmail(config.getEmails(), event);
+        verify(androidServiceMock, times(1)).sendNotification(config.getAndroids(), event);
+        verify(emailServiceMock, times(1)).sendEmail(config.getEmails(), event);
+    }
+
+    @Test
+    @Timeout(1)
+    public void eventFinishedNotifyClient_shouldSendMessage() throws InterruptedException {
+        CompletableFuture<Void> emailFuture = CompletableFuture.runAsync(() -> {});
+        CompletableFuture<Void> androidFuture = CompletableFuture.runAsync(() -> {});
+
+        when(notificationConfigRepositoryPortMock.getNotificationConfigByUserUUID(userUuid)).thenReturn(Optional.of(config));
+        when(emailServiceMock.sendEmail(any(), any())).thenReturn(emailFuture);
+        when(androidServiceMock.sendNotification(any(), any())).thenReturn(androidFuture);
+
+        var countDownLatch = new CountDownLatch(1);
+
+        doAnswer((answer) -> {
+            countDownLatch.countDown();
+            return null;
+        }).when(messengerOutputPortMock).eventFinishedNotificationSent(event);
+
+        notifierService.eventFinishedNotifyClient(event);
+
+        countDownLatch.await();
+        verify(messengerOutputPortMock, times(1)).eventFinishedNotificationSent(event);
     }
 
 }

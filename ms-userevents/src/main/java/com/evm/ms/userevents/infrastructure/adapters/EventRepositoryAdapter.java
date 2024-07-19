@@ -65,6 +65,11 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
         return toEvent(updatedEvent);
     }
 
+    @Override
+    public void updateEventTriggered(String userId, boolean triggered) {
+        eventRepository.updateTriggeredById(userId, triggered);
+    }
+
     private EventEntity toEventEntity(Event event) {
         return EventMapper.MAPPER.toEventEntity(event);
     }
