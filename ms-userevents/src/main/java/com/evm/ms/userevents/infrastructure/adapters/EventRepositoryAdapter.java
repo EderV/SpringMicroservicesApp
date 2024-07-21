@@ -66,8 +66,8 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     }
 
     @Override
-    public void updateEventTriggered(String userId, boolean triggered) {
-        eventRepository.updateTriggeredById(userId, triggered);
+    public void updateEventTriggered(String id, boolean triggered) {
+        eventRepository.updateTriggeredById(id, triggered);
     }
 
     private EventEntity toEventEntity(Event event) {

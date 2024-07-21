@@ -16,6 +16,6 @@ public interface EventRepositoryPort {
 
     Event updateEventOnlyNonNulls(Event event);
 
-    void updateEventTriggered(String userId, boolean triggered);
+    void updateEventTriggered(String id, boolean triggered);
 
 }
